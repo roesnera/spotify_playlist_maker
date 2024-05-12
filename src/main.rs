@@ -1,8 +1,20 @@
+use dotenv::dotenv;
+use regex::Regex;
 use std::{env, fs, str};
 
-use regex::{Regex, Split};
+pub mod requests;
+use requests::*;
 
-fn main() {
+#[tokio::main]
+async fn main() {
+    dotenv().ok();
+
+    let client_id = env::var("CLIENT_ID").expect("Must set CLIENT_ID env variable");
+    let client_secret = env::var("CLIENT_SECRET").expect("Must set CLIENT_SECRET env variable");
+
+    let token = get_token(&client_id, &client_secret).await.unwrap();
+    println!("{}", token);
+
     let args: Vec<String> = env::args().collect::<Vec<String>>();
 
     let filename: String = args.get(1).unwrap().to_string();
@@ -37,17 +49,16 @@ fn main() {
         }
     }
 
-    let spotify_ids: Vec<&str> = split_lines
-        .iter()
-        .map(|line_vec| -> &str { get_spotify_id(line_vec.get(0).expect("missing song name!")) })
-        .collect();
+    let mut spotify_ids = Vec::new();
+
+    for line in split_lines.iter() {
+        let id = get_spotify_id(&token, line.get(0).expect("no song here!"))
+            .await
+            .expect("Id unavailable!");
+        spotify_ids.push(id);
+    }
 
     for id in spotify_ids.iter() {
         println!("{}", id);
     }
-}
-
-fn get_spotify_id(song_name: &str) -> &str {
-    println!("retreiving spotify id for song: {:?}", song_name);
-    "some id"
 }
