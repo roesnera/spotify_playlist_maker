@@ -1,4 +1,4 @@
-use std::{env, fmt::Pointer, fs, str};
+use std::{env, fs, str};
 
 fn main() {
     let args: Vec<String> = env::args().collect::<Vec<String>>();
