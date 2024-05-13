@@ -8,6 +8,11 @@ struct TokenReturn {
 
 #[derive(Deserialize)]
 struct RequestReturn {
+    tracks: TrackRequestData,
+}
+
+#[derive(Deserialize)]
+struct TrackRequestData {
     items: Vec<Track>,
 }
 
@@ -16,20 +21,25 @@ struct Track {
     id: String,
 }
 
-pub async fn get_spotify_id<'a>(token: &'a str, song_name: &'a str) -> Result<String> {
+pub async fn get_spotify_id<'a>(
+    token: &'a str,
+    song_name: &'a str,
+    artist_name: &'a str,
+) -> Result<String> {
     let client = reqwest::Client::new();
     let url: &str = "https://api.spotify.com/v1/search";
-    let request = client
-        .get(url)
-        .bearer_auth(token)
-        .query(&["track", song_name]);
+    let request = client.get(url).bearer_auth(token).query(&[
+        ["q", &*format!("track:{} artist:{}", song_name, artist_name)],
+        ["type", "track"],
+    ]);
     println!("retreiving spotify id for song: {:?}", song_name);
 
     let response = match request.send().await {
         Result::Ok(response) => response.json::<RequestReturn>().await?,
         Result::Err(e) => panic!("{}", e),
     };
-    let items = response.items;
+    let tracks = response.tracks;
+    let items = tracks.items;
     let item = items.get(0).expect("missing item id!");
     Ok(item.id.to_owned())
 }

@@ -52,9 +52,13 @@ async fn main() {
     let mut spotify_ids = Vec::new();
 
     for line in split_lines.iter() {
-        let id = get_spotify_id(&token, line.get(0).expect("no song here!"))
-            .await
-            .expect("Id unavailable!");
+        let id = get_spotify_id(
+            &token,
+            line.get(0).expect("no song here!"),
+            line.get(1).expect("no artist here!"),
+        )
+        .await
+        .expect("Id unavailable!");
         spotify_ids.push(id);
     }
 
