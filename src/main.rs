@@ -15,6 +15,9 @@ async fn main() {
     let token = get_token(&client_id, &client_secret).await.unwrap();
     println!("{}", token);
 
+    let my_id: String = get_me(&token).await.unwrap();
+    println!("{}", my_id);
+
     let args: Vec<String> = env::args().collect::<Vec<String>>();
 
     let filename: String = args.get(1).unwrap().to_string();
