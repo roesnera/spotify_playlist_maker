@@ -1,43 +1,7 @@
 use reqwest::{self, dns::Resolve, Body, Result};
 use serde::{Deserialize, Serialize};
 
-#[derive(Deserialize)]
-struct TokenReturn {
-    access_token: String,
-}
-
-#[derive(Serialize)]
-struct CreatePlaylistBody {
-    name: String,
-    description: String,
-    public: bool,
-}
-
-#[derive(Deserialize)]
-struct MeResponse {
-    id: String,
-    display_name: String,
-}
-
-#[derive(Deserialize)]
-struct TrackResponse {
-    tracks: TrackRequestData,
-}
-
-#[derive(Deserialize)]
-struct TrackRequestData {
-    items: Vec<Track>,
-}
-
-#[derive(Deserialize)]
-struct Track {
-    id: String,
-}
-
-#[derive(Deserialize)]
-struct PlaylistResp {
-    id: String,
-}
+use crate::models::*;
 
 pub async fn get_spotify_id<'a>(
     token: &'a str,
