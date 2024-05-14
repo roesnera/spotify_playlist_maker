@@ -1,0 +1,8 @@
+<div class="col">
+	<form class="row col-gap-1" action="/makePlaylist" method="post" enctype="multipart/form-data">
+		<label for="file">File</label>
+		<input type="file" id="file" name="file" (change)="fileSelected($event)" />
+		<p>Upload your image file here</p>
+		<button type="submit">Upload file as playlist</button>
+	</form>
+</div>

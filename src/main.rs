@@ -31,7 +31,7 @@ fn rocket() -> _ {
             id: Mutex::new(client_id).into(),
             secret: Mutex::new(client_secret).into(),
         })
-        .mount("/", routes![index, success, make_playlist])
+        .mount("/", routes![index, success, make_playlist, send_file])
 }
 
 #[get("/")]
@@ -75,6 +75,8 @@ pub async fn send_file(
     let retrieved_token = get_token(&client_id, &client_secret)
         .await
         .expect("unable to retrieve token");
+
+    let code = code_state.auth_code.lock().await;
 
     let options = MultipartFormDataOptions::with_multipart_form_data_fields(vec![
         MultipartFormDataField::raw("file")
