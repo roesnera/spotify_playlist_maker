@@ -49,3 +49,14 @@ pub struct Track {
 pub struct PlaylistResp {
     pub id: String,
 }
+
+#[derive(Debug)]
+pub enum Error {
+    TrackNotFound,
+    TokenNotFound,
+    MeNotFound,
+    Rejected,
+    IdNotFound,
+    InvalidToken,
+    NoAccess,
+}

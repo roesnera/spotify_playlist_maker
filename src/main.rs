@@ -127,14 +127,16 @@ pub async fn send_file(
             let mut spotify_ids = Vec::new();
 
             for line in split_lines.iter() {
-                let id = get_spotify_id(
+                let id_result = get_spotify_id(
                     &retrieved_token,
                     line.get(0).expect("no song here!"),
                     line.get(1).expect("no artist here!"),
                 )
                 .await
-                .expect("Id unavailable!");
-                spotify_ids.push(id);
+                .unwrap_or_else(|_| "none".to_string());
+                if !(id_result.eq("none")) {
+                    spotify_ids.push(id_result);
+                }
             }
 
             for id in spotify_ids.iter() {
